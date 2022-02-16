@@ -195,11 +195,8 @@ function vanillaSelectBox(domSelector, options) {
         let self = this;
         if (!self.userOptions.stayOpen) {
             self.drop.style.visibility = "hidden";
-            if (self.search) {
-                self.inputBox.value = '';
-                Array.prototype.slice.call(self.listElements).forEach(function (x) {
-                    x.classList.remove('hide');
-                });
+            if(self.search){
+                resetStateOnClose(self);
             }
         }
     }
@@ -765,16 +762,8 @@ function vanillaSelectBox(domSelector, options) {
         function docListener() {
             document.removeEventListener("click", docListener);
             self.drop.style.visibility = "hidden";
-            if (self.search) {
-                self.inputBox.value = "";
-                Array.prototype.slice.call(self.listElements).forEach(function (x) {
-                    x.classList.remove('hidden-search');
-                });
-                if (self.listGroups) {
-                    Array.prototype.slice.call(self.listGroups).forEach(function (x) {
-                        x.classList.remove('hidden-search');
-                    });
-                }
+            if(self.search){
+                resetStateOnClose(self);
             }
         }
     }
@@ -1451,4 +1440,33 @@ function vanillaSelectBox_type(target) {
     const stripped = computedType.replace('[object ', '').replace(']', '');
     const lowercased = stripped.toLowerCase();
     return lowercased;
+}
+
+function resetStateOnClose(self) {
+    self.inputBox.value = "";
+    let totalElements = self.listElements.length;
+    let checkedElements = 0;
+    let checkAllElement = null;
+    Array.prototype.slice.call(self.listElements).forEach(function (x) {
+        if (x.getAttribute('data-value') === 'all' && totalElements === self.listElements.length) {
+            totalElements -=1;
+            x.classList.remove('disabled');
+            checkAllElement = x;
+        } else {
+            x.classList.remove('hidden-search');
+            if (x.classList.contains('active')) {
+                checkedElements++;
+            }
+        }
+    });
+    if (totalElements !== checkedElements && checkAllElement) {
+        checkAllElement.classList.remove("active");
+        checkAllElement.innerText = self.userOptions.translations.selectAll;
+        checkAllElement.setAttribute('data-selected', 'false')
+    }
+    if (self.listGroups) {
+        Array.prototype.slice.call(self.listGroups).forEach(function (x) {
+            x.classList.remove('hidden-search');
+        });
+    }
 }
