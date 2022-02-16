@@ -615,13 +615,30 @@ function vanillaSelectBox(domSelector, options) {
             self.drop.style.visibility = "hidden";
             if(self.search){
                 self.inputBox.value = "";
+                let totalElements = self.listElements.length;
+                let checkedElements = 0;
+                let checkAllElement = null;
                 Array.prototype.slice.call(self.listElements).forEach(function (x) {
-                    x.classList.remove('hidden-search');
+                    if (x.getAttribute('data-value') === 'all' && totalElements === self.listElements.length) {
+                        totalElements -=1;
+                        x.classList.remove('disabled');
+                        checkAllElement = x;
+                    } else {
+                        x.classList.remove('hidden-search');
+                        if (x.classList.contains('active')) {
+                            checkedElements++;
+                        }
+                    }
                 });
                 if (self.listGroups) {
                     Array.prototype.slice.call(self.listGroups).forEach(function (x) {
                         x.classList.remove('hidden-search');
                     });
+                }
+                if (totalElements !== checkedElements && checkAllElement) {
+                    checkAllElement.classList.remove("active");
+                    checkAllElement.innerText = self.userOptions.translations.selectAll;
+                    checkAllElement.setAttribute('data-selected', 'false')
                 }
             }
         }
