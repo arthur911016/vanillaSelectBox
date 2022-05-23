@@ -134,6 +134,8 @@ function vanillaSelectBox(domSelector, options) {
                 });
             }
         }
+        window.removeEventListener('mousewheel', self.handleScroll);
+        window.removeEventListener('mousedown', self.handleMouseDown);
     }
 
     this.getCssArray =function(selector){
@@ -186,7 +188,6 @@ function vanillaSelectBox(domSelector, options) {
         this.root.parentNode.insertBefore(this.main, this.root.nextSibling);
         this.main.classList.add('vsb-main');
         this.main.setAttribute('id', 'btn-group-' + this.domSelector);
-        this.main.style.marginLeft = this.main.style.marginLeft;
         if(self.userOptions.stayOpen){
             this.main.style.minHeight =  (this.userOptions.maxHeight+10) + 'px';
         }
@@ -494,6 +495,9 @@ function vanillaSelectBox(domSelector, options) {
                         selectAll.setAttribute('data-selected', 'true')
                     }
                 }
+                if (!self.userOptions.stayOpen) {
+                    self.calculatePosition();
+                }
             });
         }
 
@@ -509,23 +513,10 @@ function vanillaSelectBox(domSelector, options) {
 			this.main.addEventListener('click', function (e) {
 				if (self.isDisabled) return;
                     self.drop.style.display = "block";
-                    const { clientHeight } = self.main;
-                    const { clientWidth } = self.button;
-                    const { top, left } = self.main.getBoundingClientRect();
-                    const { offsetHeight, offsetWidth }  = self.drop;
-                    const { innerHeight, scrollY, innerWidth, scrollX } = window;
-                    const windowBottom = innerHeight + scrollY
-                    const windowRight = innerWidth + scrollX
-                    const hasSpaceBelow = (top + clientHeight + offsetHeight) < windowBottom;
-                    const hasSpaceRight = (left + offsetWidth) < windowRight;
-                    const actualTop = top + scrollY;
-                    const actualLeft = left + scrollX;
-                    const topPosition = hasSpaceBelow ? actualTop + clientHeight : actualTop - offsetHeight;
-                    const leftPosition = hasSpaceRight ? actualLeft : (actualLeft + clientWidth) - offsetWidth;
-                    self.drop.style.top = `${topPosition}px`
-                    self.drop.style.left = `${leftPosition}px`
-
                     self.drop.style.visibility = "visible";
+                    self.calculatePosition();
+                    window.addEventListener('mousewheel', self.handleScroll);
+                    window.addEventListener('mousedown', self.handleMouseDown);
                     document.addEventListener("click", docListener);
                     e.preventDefault();
                     e.stopPropagation();
@@ -656,9 +647,41 @@ function vanillaSelectBox(domSelector, options) {
                 }
             }
         }
+
+        this.handleScroll = function(e) {
+            const target = e.target;
+            if (!e.target || (!self.ul.contains(target) || target.type === 'text')) {
+                self.closeOrder();
+            }
+        }
+        this.handleMouseDown = function(e) {
+            const target = e.target;
+            if (!e.target || (!self.drop.contains(target) && !self.main.contains(target))) {
+                self.closeOrder();
+            }
+        }
     }
     this.init();
     this.checkUncheckAll();
+}
+
+vanillaSelectBox.prototype.calculatePosition = function() {
+    const self = this
+    const { clientHeight } = self.main;
+    const { clientWidth } = self.button;
+    const { top, left } = self.main.getBoundingClientRect();
+    const { offsetHeight, offsetWidth }  = self.drop;
+    const { innerHeight, scrollY, innerWidth, scrollX } = window;
+    const windowBottom = innerHeight + scrollY;
+    const windowRight = innerWidth + scrollX;
+    const hasSpaceBelow = (top + clientHeight + offsetHeight) < windowBottom;
+    const hasSpaceRight = (left + offsetWidth) < windowRight;
+    const actualTop = top + scrollY;
+    const actualLeft = left + scrollX;
+    const topPosition = hasSpaceBelow ? actualTop + clientHeight : actualTop - offsetHeight;
+    const leftPosition = hasSpaceRight ? actualLeft : (actualLeft + clientWidth) - offsetWidth;
+    self.drop.style.top = `${topPosition}px`
+    self.drop.style.left = `${leftPosition}px`
 }
 
 vanillaSelectBox.prototype.disableItems = function (values) {
@@ -881,20 +904,20 @@ vanillaSelectBox.prototype.privateSendChange = function () {
     this.root.dispatchEvent(event);
 }
 
-	vanillaSelectBox.prototype.empty = function () {
-        Array.prototype.slice.call(this.listElements).forEach(function (x) {
-            x.classList.remove('active');
-        });
-        Array.prototype.slice.call(this.options).forEach(function (x) {
-            x.selected = false;
-        });
-        this.title.textContent = '';
-        if (this.userOptions.placeHolder != '' && this.title.textContent == '') {
-            this.title.textContent = this.userOptions.placeHolder;
-        }
-        this.checkUncheckAll();
-        this.privateSendChange();
+vanillaSelectBox.prototype.empty = function () {
+    Array.prototype.slice.call(this.listElements).forEach(function (x) {
+        x.classList.remove('active');
+    });
+    Array.prototype.slice.call(this.options).forEach(function (x) {
+        x.selected = false;
+    });
+    this.title.textContent = '';
+    if (this.userOptions.placeHolder != '' && this.title.textContent == '') {
+        this.title.textContent = this.userOptions.placeHolder;
     }
+    this.checkUncheckAll();
+    this.privateSendChange();
+}
 
 vanillaSelectBox.prototype.destroy = function () {
     let already = document.getElementById('btn-group-' + this.domSelector);
