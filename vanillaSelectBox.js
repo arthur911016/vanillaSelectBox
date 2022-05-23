@@ -510,14 +510,20 @@ function vanillaSelectBox(domSelector, options) {
 				if (self.isDisabled) return;
                     self.drop.style.display = "block";
                     const { clientHeight } = self.main;
+                    const { clientWidth } = self.button;
                     const { top, left } = self.main.getBoundingClientRect();
-                    const { offsetHeight }  = self.drop;
-                    const { innerHeight, scrollY } = window;
-                    const hasSpaceBelow = (top + clientHeight + offsetHeight) < (innerHeight + scrollY);
+                    const { offsetHeight, offsetWidth }  = self.drop;
+                    const { innerHeight, scrollY, innerWidth, scrollX } = window;
+                    const windowBottom = innerHeight + scrollY
+                    const windowRight = innerWidth + scrollX
+                    const hasSpaceBelow = (top + clientHeight + offsetHeight) < windowBottom;
+                    const hasSpaceRight = (left + offsetWidth) < windowRight;
                     const actualTop = top + scrollY;
+                    const actualLeft = left + scrollX;
                     const topPosition = hasSpaceBelow ? actualTop + clientHeight : actualTop - offsetHeight;
+                    const leftPosition = hasSpaceRight ? actualLeft : (actualLeft + clientWidth) - offsetWidth;
                     self.drop.style.top = `${topPosition}px`
-                    self.drop.style.left = `${left}px`
+                    self.drop.style.left = `${leftPosition}px`
 
                     self.drop.style.visibility = "visible";
                     document.addEventListener("click", docListener);
