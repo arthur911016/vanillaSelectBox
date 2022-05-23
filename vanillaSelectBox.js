@@ -125,6 +125,7 @@ function vanillaSelectBox(domSelector, options) {
     this.closeOrder=function(){
         let self = this;
         if(!self.userOptions.stayOpen){
+            self.drop.style.display = "none";
             self.drop.style.visibility = "hidden";
             if(self.search){
                 self.inputBox.value = '';
@@ -169,6 +170,13 @@ function vanillaSelectBox(domSelector, options) {
     this.init = function () {
         let self = this;
         this.root.style.display = 'none';
+        let holder = document
+            .querySelector('.vanilla-select-box-drop-down-container');
+        if (!holder) {
+            holder = document.createElement('div');
+            holder.classList.add('vanilla-select-box-drop-down-container');
+            document.body.appendChild(holder);
+        }
         let already = document.getElementById('btn-group-' + self.domSelector);
         if (already) {
             already.remove();
@@ -207,7 +215,9 @@ function vanillaSelectBox(domSelector, options) {
         caret.style.right = '8px';
         caret.style.marginTop = '8px';
 
-		if(self.userOptions.stayOpen){
+        const stayOpen = self.userOptions.stayOpen;
+
+		if(stayOpen){
 			caret.style.display = 'none';
 			this.title.style.paddingLeft = '20px';
 			this.title.style.fontStyle = 'italic';
@@ -215,9 +225,14 @@ function vanillaSelectBox(domSelector, options) {
         }
 
         this.drop = document.createElement('div');
-        this.main.appendChild(this.drop);
         this.drop.classList.add('vsb-menu');
         this.drop.style.zIndex = 2000 - this.instanceOffset;
+        if (stayOpen) {
+            this.main.appendChild(this.drop);
+        } else {
+            this.drop.style.display = 'none'
+            holder.appendChild(this.drop);
+        }
         this.ul = document.createElement('ul');
         this.drop.appendChild(this.ul);
 
@@ -493,8 +508,15 @@ function vanillaSelectBox(domSelector, options) {
 		}else{
 			this.main.addEventListener('click', function (e) {
 				if (self.isDisabled) return;
-                    self.drop.style.left = self.left + "px";
-                    self.drop.style.top = self.top + "px";
+                    self.drop.style.display = "block";
+                    const { offsetTop, offsetLeft, clientHeight } = self.main;
+                    const { offsetHeight }  = self.drop;
+                    const { innerHeight, scrollY } = window;
+                    const hasSpaceBelow = (offsetTop + clientHeight + offsetHeight) < (innerHeight + scrollY);
+                    const top = hasSpaceBelow ? offsetTop + clientHeight : offsetTop - offsetHeight;
+                    self.drop.style.top = `${top}px`
+                    self.drop.style.left = `${offsetLeft}px`
+
                     self.drop.style.visibility = "visible";
                     document.addEventListener("click", docListener);
                     e.preventDefault();
@@ -612,6 +634,7 @@ function vanillaSelectBox(domSelector, options) {
         });
         function docListener() {
             document.removeEventListener("click", docListener);
+            self.drop.style.display = "none";
             self.drop.style.visibility = "hidden";
             if(self.search){
                 self.inputBox.value = "";
