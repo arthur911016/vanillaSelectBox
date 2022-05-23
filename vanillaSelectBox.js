@@ -675,6 +675,11 @@ vanillaSelectBox.prototype.calculatePosition = function() {
     const windowBottom = innerHeight + scrollY;
     const windowRight = innerWidth + scrollX;
     const hasSpaceBelow = (top + clientHeight + offsetHeight) < windowBottom;
+    if (!hasSpaceBelow) {
+        self.drop.classList.add('open-to-top')
+    } else {
+        self.drop.classList.remove('open-to-top')
+    }
     const hasSpaceRight = (left + offsetWidth) < windowRight;
     const actualTop = top + scrollY;
     const actualLeft = left + scrollX;
