@@ -265,8 +265,8 @@ function vanillaSelectBox(domSelector, options) {
 
         this.rootToken = self.domSelector.replace(/[^A-Za-z0-9]+/, "")
         this.root.style.display = 'none';
-        let holder = document
-            .querySelector('.vanilla-select-box-drop-down-container');
+        let holder =
+            document.querySelector('.vanilla-select-box-drop-down-container');
         if (!holder) {
             holder = document.createElement('div');
             holder.classList.add('vanilla-select-box-drop-down-container');
@@ -314,7 +314,7 @@ function vanillaSelectBox(domSelector, options) {
 
         const stayOpen = self.userOptions.stayOpen;
 
-		if(stayOpen) {
+        if (stayOpen) {
             caret.style.display = 'none';
             this.title.style.paddingLeft = '20px';
             this.title.style.fontStyle = 'italic';
@@ -639,28 +639,28 @@ function vanillaSelectBox(domSelector, options) {
 
         if (self.userOptions.stayOpen) {
             self.drop.style.visibility = "visible";
-			self.drop.style.boxShadow = "none";
-			self.drop.style.minHeight =  (this.userOptions.maxHeight+10) + "px";
-			self.drop.style.position = "relative";
-			self.drop.style.left = "0px";
-			self.drop.style.top = "0px";
-			self.button.style.border = "none";
-		} else {
-			this.main.addEventListener('click', function (e) {
-				if (self.isDisabled) return;
-                    self.drop.style.display = "block";
-                    self.drop.style.visibility = "visible";
-                    self.calculatePosition();
-                    window.addEventListener('mousewheel', self.handleScroll);
-                    window.addEventListener('mousedown', self.handleMouseDown);
-                    document.addEventListener("click", docListener);
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if(!self.userOptions.stayOpen ){
-                        VSBoxCounter.closeAllButMe(self.instanceOffset);
-                    }
-				});
-		}
+            self.drop.style.boxShadow = "none";
+            self.drop.style.minHeight =  (this.userOptions.maxHeight+10) + "px";
+            self.drop.style.position = "relative";
+            self.drop.style.left = "0px";
+            self.drop.style.top = "0px";
+            self.button.style.border = "none";
+        } else {
+            this.main.addEventListener('click', function (e) {
+                if (self.isDisabled) return;
+                self.drop.style.display = "block";
+                self.drop.style.visibility = "visible";
+                self.calculatePosition();
+                window.addEventListener('mousewheel', self.handleScroll);
+                window.addEventListener('mousedown', self.handleMouseDown);
+                document.addEventListener("click", docListener);
+                e.preventDefault();
+                e.stopPropagation();
+                if (!self.userOptions.stayOpen) {
+                    VSBoxCounter.closeAllButMe(self.instanceOffset);
+                }
+            });
+        }
 
         this.drop.addEventListener('click', function (e) {
             if (self.isDisabled) return;
