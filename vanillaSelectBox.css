@@ -25,6 +25,9 @@ li[data-parent].open:not(.hidden-search){
   border-radius:4px;
   font-size : 11px;
 }
+.vsb-menu.open-to-top {
+	box-shadow: 0 -6px 12px rgba(0,0,0,.175);
+}
 
 .vsb-js-search-zone{
 	position:absolute;/*Don't change*/
