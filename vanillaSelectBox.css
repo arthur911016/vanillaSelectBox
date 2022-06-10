@@ -12,26 +12,27 @@ li[data-parent].open:not(.hidden-search){
 }
 
 .vsb-menu{
-  cursor:pointer;
-  z-index:1000;
+	cursor:pointer;
+	z-index:1000;
 	display:block;
 	visibility: hidden;
-  position:absolute;/*Don't change*/
-  border:1px solid #B2B2B2;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid rgba(0,0,0,.15);
-  box-shadow: 0 6px 12px rgba(0,0,0,.175);
-  border-radius:4px;
-  font-size : 11px;
+	position:absolute;/*Don't change*/
+	border:1px solid #B2B2B2;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid rgba(0,0,0,.15);
+	box-shadow: 0 6px 12px rgba(0,0,0,.175);
+	border-radius:4px;
+	font-size : 11px;
 }
+
 .vsb-menu.open-to-top {
 	box-shadow: 0 -6px 12px rgba(0, 0, 0, .175);
 }
 
 .vsb-js-search-zone{
 	position:absolute;/*Don't change*/
-    z-index:1001;
+	z-index:1001;
 	width: 80%;
 	min-height:1.8em;
 	padding: 2px;
