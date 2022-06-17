@@ -731,7 +731,7 @@ function vanillaSelectBox(domSelector, options) {
                 }
                 self.privateSendChange();
                 if (!self.userOptions.stayOpen) {
-                    docListener();
+                    docListener(e);
                 }
             } else {
                 let wasActive = false;
@@ -1407,7 +1407,7 @@ vanillaSelectBox.prototype.setValue = function (values) {
             let text = '';
             let classNames = ''
             Array.prototype.slice.call(listElements).forEach(function (x) {
-                let liVal = x.getAttribute('data-value') == values;
+                let liVal = x.getAttribute('data-value');
                 if(liVal !== "all"){
                     if (liVal == values) {
                         x.classList.add('active');
