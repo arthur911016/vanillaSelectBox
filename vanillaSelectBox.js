@@ -1287,7 +1287,8 @@ vanillaSelectBox.prototype.checkUncheckAll = function () {
                 nrChecked += x.classList.contains('active');
             }
             if (x.getAttribute('data-value') !== 'all'
-                && !x.classList.contains('disabled')) {
+                && !x.classList.contains('disabled')
+            ) {
                 totalAvailableElements++;
             }
             if (x.getAttribute('data-value') !== 'all'
@@ -1308,7 +1309,7 @@ vanillaSelectBox.prototype.checkUncheckAll = function () {
             checkAllElement.setAttribute('data-selected', 'true')
         } else if (nrChecked === 0) {
             // uncheck the checkAll checkbox
-            if (!totalItemsChecked) {
+            if (totalItemsChecked === 0) {
                 self.title.textContent = self.userOptions.placeHolder;
             }
             checkAllElement.classList.remove('active');
